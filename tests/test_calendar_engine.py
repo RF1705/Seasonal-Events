@@ -9,6 +9,8 @@ from custom_components.seasonal_events.calendar_engine import (
     active_or_next_window,
     easter_sunday,
     first_advent,
+    islamic_to_gregorian,
+    ramadan_windows_for_gregorian_year,
     new_year_countdown,
 )
 from custom_components.seasonal_events.const import EVENT_CHRISTMAS_SEASON
@@ -46,3 +48,10 @@ def test_new_year_countdown() -> None:
 def test_easter_2026() -> None:
     """Test Western Easter calculation."""
     assert easter_sunday(2026) == date(2026, 4, 5)
+
+
+def test_ramadan_2026() -> None:
+    """Test tabular Ramadan calculation."""
+    assert islamic_to_gregorian(1447, 9, 1) == date(2026, 2, 17)
+    windows = ramadan_windows_for_gregorian_year(2026)
+    assert any(window.start == date(2026, 2, 17) for window in windows)

@@ -13,6 +13,33 @@
       }
     }
   },
+  "entity": {
+    "binary_sensor": {
+      "advent": {
+        "name": "Advent"
+      },
+      "christmas_season": {
+        "name": "Weihnachtszeit"
+      },
+      "new_year": {
+        "name": "Neujahr"
+      },
+      "halloween": {
+        "name": "Halloween"
+      },
+      "easter": {
+        "name": "Ostern"
+      },
+      "ramadan": {
+        "name": "Ramadan"
+      }
+    },
+    "sensor": {
+      "new_year_countdown": {
+        "name": "Neujahrs-Countdown"
+      }
+    }
+  },
   "options": {
     "step": {
       "init": {

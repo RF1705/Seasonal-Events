@@ -17,16 +17,31 @@ from .const import (
     CONF_NAME,
     CONF_REGION_PROFILE,
     COUNTRY_PROFILES,
+    COUNTRY_PROFILE_LABELS,
     DEFAULT_COUNTRY_PROFILE,
     DEFAULT_EVENT_COLLECTIONS,
     DEFAULT_EVENTS,
     DEFAULT_NAME,
-    DEFAULT_REGION_PROFILE,
     DOMAIN,
     EVENT_COLLECTIONS,
+    EVENT_COLLECTION_LABELS,
+    EVENT_LABELS,
     EVENTS,
-    REGION_PROFILES,
 )
+
+
+def _localized_labels(
+    labels: dict[str, dict[str, str]],
+    language: str | None,
+    fallback: dict[str, str],
+) -> dict[str, str]:
+    """Return localized labels."""
+    if language:
+        language = language.split("-")[0]
+    return labels.get(language or "en", labels["en"]) | {
+        key: labels.get(language or "en", labels["en"]).get(key, value)
+        for key, value in fallback.items()
+    }
 
 
 def _select_options(items: dict[str, str]) -> list[selector.SelectOptionDict]:
@@ -37,20 +52,34 @@ def _select_options(items: dict[str, str]) -> list[selector.SelectOptionDict]:
     ]
 
 
-def _event_options() -> list[selector.SelectOptionDict]:
+def _event_options(language: str | None) -> list[selector.SelectOptionDict]:
     """Return event selector options."""
+    labels = _localized_labels(EVENT_LABELS, language, {key: key for key in EVENTS})
     return [
-        selector.SelectOptionDict(value=value, label=str(data["name"]))
-        for value, data in EVENTS.items()
+        selector.SelectOptionDict(value=value, label=labels[value])
+        for value in EVENTS
     ]
 
 
-def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
+def _schema(
+    defaults: dict[str, Any] | None = None,
+    language: str | None = None,
+) -> vol.Schema:
     """Return the config schema."""
     defaults = defaults or {}
     country_profile = defaults.get(
         CONF_COUNTRY_PROFILE,
         defaults.get(CONF_REGION_PROFILE, DEFAULT_COUNTRY_PROFILE),
+    )
+    country_labels = _localized_labels(
+        COUNTRY_PROFILE_LABELS,
+        language,
+        COUNTRY_PROFILES,
+    )
+    collection_labels = _localized_labels(
+        EVENT_COLLECTION_LABELS,
+        language,
+        EVENT_COLLECTIONS,
     )
     return vol.Schema(
         {
@@ -63,7 +92,7 @@ def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
                 default=country_profile,
             ): selector.SelectSelector(
                 selector.SelectSelectorConfig(
-                    options=_select_options(COUNTRY_PROFILES),
+                    options=_select_options(country_labels),
                     mode=selector.SelectSelectorMode.DROPDOWN,
                 )
             ),
@@ -75,7 +104,7 @@ def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
                 ),
             ): selector.SelectSelector(
                 selector.SelectSelectorConfig(
-                    options=_select_options(EVENT_COLLECTIONS),
+                    options=_select_options(collection_labels),
                     multiple=True,
                     mode=selector.SelectSelectorMode.LIST,
                 )
@@ -85,7 +114,7 @@ def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
                 default=defaults.get(CONF_ENABLED_EVENTS, DEFAULT_EVENTS),
             ): selector.SelectSelector(
                 selector.SelectSelectorConfig(
-                    options=_event_options(),
+                    options=_event_options(language),
                     multiple=True,
                     mode=selector.SelectSelectorMode.LIST,
                 )
@@ -113,7 +142,7 @@ class SeasonalEventsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=_schema(),
+            data_schema=_schema(language=self.hass.config.language),
         )
 
     @staticmethod
@@ -144,5 +173,5 @@ class SeasonalEventsOptionsFlow(config_entries.OptionsFlow):
         current = {**self._config_entry.data, **self._config_entry.options}
         return self.async_show_form(
             step_id="init",
-            data_schema=_schema(current),
+            data_schema=_schema(current, self.hass.config.language),
         )

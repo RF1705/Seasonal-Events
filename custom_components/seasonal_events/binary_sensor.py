@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from datetime import timedelta
 
-from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.components.binary_sensor import (
+    BinarySensorEntity,
+    BinarySensorEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -80,12 +83,11 @@ class SeasonalEventBinarySensor(BinarySensorEntity):
         self._region_profile = region_profile
         self._window = None
         self._attr_unique_id = f"{entry_id}_{event_key}"
-        self._attr_name = str(EVENTS[event_key]["name"])
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return device information."""
-        return DeviceInfo(
+        self.entity_description = BinarySensorEntityDescription(
+            key=event_key,
+            translation_key=str(EVENTS[event_key]["translation_key"]),
+        )
+        self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
             manufacturer="Seasonal Events",
             name=self._device_name,

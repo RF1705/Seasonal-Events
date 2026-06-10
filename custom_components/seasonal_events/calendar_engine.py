@@ -11,6 +11,7 @@ from .const import (
     EVENT_EASTER,
     EVENT_HALLOWEEN,
     EVENT_NEW_YEAR,
+    EVENT_RAMADAN,
 )
 from .models import EventWindow
 
@@ -40,6 +41,60 @@ def easter_sunday(year: int) -> date:
     month = (h + l - 7 * m + 114) // 31
     day = ((h + l - 7 * m + 114) % 31) + 1
     return date(year, month, day)
+
+
+def _islamic_to_julian_day(year: int, month: int, day: int) -> int:
+    """Return Julian day number for a tabular Islamic date."""
+    return (
+        day
+        + int((29.5 * (month - 1)) + 0.999999)
+        + (year - 1) * 354
+        + ((3 + (11 * year)) // 30)
+        + 1948439
+        - 1
+    )
+
+
+def _julian_day_to_gregorian(julian_day: int) -> date:
+    """Convert Julian day number to Gregorian date."""
+    a = julian_day + 32044
+    b = (4 * a + 3) // 146097
+    c = a - (146097 * b) // 4
+    d = (4 * c + 3) // 1461
+    e = c - (1461 * d) // 4
+    m = (5 * e + 2) // 153
+    day = e - (153 * m + 2) // 5 + 1
+    month = m + 3 - 12 * (m // 10)
+    year = 100 * b + d - 4800 + (m // 10)
+    return date(year, month, day)
+
+
+def islamic_to_gregorian(year: int, month: int, day: int) -> date:
+    """Convert a tabular Islamic date to Gregorian date."""
+    return _julian_day_to_gregorian(_islamic_to_julian_day(year, month, day))
+
+
+def ramadan_windows_for_gregorian_year(year: int) -> list[EventWindow]:
+    """Return Ramadan windows overlapping a Gregorian year."""
+    # A Gregorian year overlaps one or sometimes two Islamic years.
+    islamic_year_estimate = int(((year - 622) * 33) / 32)
+    windows: list[EventWindow] = []
+
+    for islamic_year in range(islamic_year_estimate - 1, islamic_year_estimate + 3):
+        start = islamic_to_gregorian(islamic_year, 9, 1)
+        end = islamic_to_gregorian(islamic_year, 9, 30)
+        if start.year <= year <= end.year or start.year == year or end.year == year:
+            windows.append(
+                EventWindow(
+                    key=EVENT_RAMADAN,
+                    name="Ramadan",
+                    start=start,
+                    end=end,
+                    icon="mdi:moon-waxing-crescent",
+                )
+            )
+
+    return windows
 
 
 def next_new_year(now: datetime) -> datetime:
@@ -80,7 +135,7 @@ def event_windows_for_year(year: int, region_profile: str) -> list[EventWindow]:
 
     easter = easter_sunday(year)
 
-    return [
+    windows = [
         EventWindow(
             key=EVENT_ADVENT,
             name="Advent",
@@ -117,6 +172,8 @@ def event_windows_for_year(year: int, region_profile: str) -> list[EventWindow]:
             icon="mdi:egg-easter",
         ),
     ]
+    windows.extend(ramadan_windows_for_gregorian_year(year))
+    return windows
 
 
 def active_or_next_window(

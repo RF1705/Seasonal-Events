@@ -4,7 +4,11 @@ from __future__ import annotations
 
 from datetime import timedelta
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTime
 from homeassistant.core import HomeAssistant, callback
@@ -39,7 +43,6 @@ class NewYearCountdownSensor(SensorEntity):
     """Countdown to the next New Year."""
 
     _attr_has_entity_name = True
-    _attr_name = "New Year Countdown"
     _attr_device_class = SensorDeviceClass.DURATION
     _attr_native_unit_of_measurement = UnitOfTime.SECONDS
     _attr_icon = "mdi:timer-sand"
@@ -51,11 +54,11 @@ class NewYearCountdownSensor(SensorEntity):
         self._device_name = device_name
         self._attr_unique_id = f"{entry_id}_new_year_countdown"
         self._countdown: dict[str, int | str] = {}
-
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Return device information."""
-        return DeviceInfo(
+        self.entity_description = SensorEntityDescription(
+            key="new_year_countdown",
+            translation_key="new_year_countdown",
+        )
+        self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self._entry_id)},
             manufacturer="Seasonal Events",
             name=self._device_name,

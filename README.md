@@ -16,6 +16,7 @@ date logic in one integration and keep automations small.
 - `binary_sensor.new_year`
 - `binary_sensor.halloween`
 - `binary_sensor.easter`
+- `binary_sensor.ramadan`
 - `sensor.new_year_countdown`
 
 ## First country profile
@@ -27,6 +28,7 @@ The first scaffold includes a `de` profile:
 - New Year: December 31 through January 1
 - Halloween: October 31
 - Easter: Good Friday through Easter Monday
+- Ramadan: tabular Islamic calendar, Ramadan 1 through Ramadan 30
 
 More country profiles and event collections can be added as data definitions.
 
