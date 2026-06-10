@@ -31,6 +31,54 @@
       },
       "ramadan": {
         "name": "Ramadan"
+      },
+      "eid_al_fitr": {
+        "name": "Eid al-Fitr"
+      },
+      "eid_al_adha": {
+        "name": "Eid al-Adha"
+      },
+      "ashura": {
+        "name": "Aschura"
+      },
+      "lailat_al_qadr": {
+        "name": "Lailat al-Qadr"
+      },
+      "rosh_hashanah": {
+        "name": "Rosch ha-Schana"
+      },
+      "yom_kippur": {
+        "name": "Jom Kippur"
+      },
+      "sukkot": {
+        "name": "Sukkot"
+      },
+      "hanukkah": {
+        "name": "Chanukka"
+      },
+      "passover": {
+        "name": "Pessach"
+      },
+      "shavuot": {
+        "name": "Schawuot"
+      },
+      "purim": {
+        "name": "Purim"
+      },
+      "thanksgiving": {
+        "name": "Thanksgiving"
+      },
+      "guy_fawkes_night": {
+        "name": "Guy Fawkes Night"
+      },
+      "german_unity_day": {
+        "name": "Tag der Deutschen Einheit"
+      },
+      "yom_haatzmaut": {
+        "name": "Jom haAtzma'ut"
+      },
+      "saudi_national_day": {
+        "name": "Saudi National Day"
       }
     },
     "sensor": {

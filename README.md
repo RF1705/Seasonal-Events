@@ -22,20 +22,40 @@ and select the individual events you want to expose as sensors.
 - `binary_sensor.halloween`
 - `binary_sensor.easter`
 - `binary_sensor.ramadan`
+- `binary_sensor.eid_al_fitr`
+- `binary_sensor.eid_al_adha`
+- `binary_sensor.ashura`
+- `binary_sensor.lailat_al_qadr`
+- `binary_sensor.rosh_hashanah`
+- `binary_sensor.yom_kippur`
+- `binary_sensor.sukkot`
+- `binary_sensor.hanukkah`
+- `binary_sensor.passover`
+- `binary_sensor.shavuot`
+- `binary_sensor.purim`
 - `sensor.new_year_countdown`
 
-## First country profile
+## Country profiles
 
-The first scaffold includes a `de` profile:
+The first scaffold includes visible differences between these profiles:
+
+- Germany (`de`)
+- United States (`us`)
+- United Kingdom (`gb`)
+- Israel (`il`)
+- Saudi Arabia (`sa`)
 
 - Advent: first Advent Sunday through December 24
 - Christmas Season: first Advent Sunday through January 6
 - New Year: December 31 through January 1
 - Halloween: October 31
 - Easter: Good Friday through Easter Monday
-- Ramadan: tabular Islamic calendar, Ramadan 1 through Ramadan 30
+- Jewish events: calculated Hebrew calendar
+- Islamic events: calculated tabular Islamic calendar
 
-More country profiles and event collections can be added as data definitions.
+Islamic dates can differ by country or moon-sighting practice. The current
+implementation is deterministic and suitable for automations, but regional
+Islamic calendar modes can be added later.
 
 ## Automation idea
 
