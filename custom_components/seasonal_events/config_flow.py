@@ -8,48 +8,90 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import callback
+from homeassistant.helpers import selector
 
 from .const import (
+    CONF_COUNTRY_PROFILE,
     CONF_ENABLED_EVENTS,
+    CONF_EVENT_COLLECTIONS,
+    CONF_NAME,
     CONF_REGION_PROFILE,
+    COUNTRY_PROFILES,
+    DEFAULT_COUNTRY_PROFILE,
+    DEFAULT_EVENT_COLLECTIONS,
     DEFAULT_EVENTS,
+    DEFAULT_NAME,
     DEFAULT_REGION_PROFILE,
     DOMAIN,
+    EVENT_COLLECTIONS,
+    EVENTS,
     REGION_PROFILES,
 )
+
+
+def _select_options(items: dict[str, str]) -> list[selector.SelectOptionDict]:
+    """Return selector options."""
+    return [
+        selector.SelectOptionDict(value=value, label=label)
+        for value, label in items.items()
+    ]
+
+
+def _event_options() -> list[selector.SelectOptionDict]:
+    """Return event selector options."""
+    return [
+        selector.SelectOptionDict(value=value, label=str(data["name"]))
+        for value, data in EVENTS.items()
+    ]
 
 
 def _schema(defaults: dict[str, Any] | None = None) -> vol.Schema:
     """Return the config schema."""
     defaults = defaults or {}
+    country_profile = defaults.get(
+        CONF_COUNTRY_PROFILE,
+        defaults.get(CONF_REGION_PROFILE, DEFAULT_COUNTRY_PROFILE),
+    )
     return vol.Schema(
         {
             vol.Required(
-                CONF_REGION_PROFILE,
-                default=defaults.get(CONF_REGION_PROFILE, DEFAULT_REGION_PROFILE),
-            ): vol.In(REGION_PROFILES),
+                CONF_NAME,
+                default=defaults.get(CONF_NAME, DEFAULT_NAME),
+            ): selector.TextSelector(),
+            vol.Required(
+                CONF_COUNTRY_PROFILE,
+                default=country_profile,
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=_select_options(COUNTRY_PROFILES),
+                    mode=selector.SelectSelectorMode.DROPDOWN,
+                )
+            ),
+            vol.Required(
+                CONF_EVENT_COLLECTIONS,
+                default=defaults.get(
+                    CONF_EVENT_COLLECTIONS,
+                    DEFAULT_EVENT_COLLECTIONS,
+                ),
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=_select_options(EVENT_COLLECTIONS),
+                    multiple=True,
+                    mode=selector.SelectSelectorMode.LIST,
+                )
+            ),
             vol.Required(
                 CONF_ENABLED_EVENTS,
                 default=defaults.get(CONF_ENABLED_EVENTS, DEFAULT_EVENTS),
-            ): cv_multi_select(DEFAULT_EVENTS),
+            ): selector.SelectSelector(
+                selector.SelectSelectorConfig(
+                    options=_event_options(),
+                    multiple=True,
+                    mode=selector.SelectSelectorMode.LIST,
+                )
+            ),
         }
     )
-
-
-def cv_multi_select(options: list[str]):
-    """Validate a multi-select list."""
-
-    def validator(value: Any) -> list[str]:
-        if isinstance(value, str):
-            value = [value]
-        if not isinstance(value, list):
-            raise vol.Invalid("expected list")
-        unknown = set(value) - set(options)
-        if unknown:
-            raise vol.Invalid(f"unknown options: {unknown}")
-        return value
-
-    return validator
 
 
 class SeasonalEventsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -62,12 +104,10 @@ class SeasonalEventsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         user_input: dict[str, Any] | None = None,
     ) -> config_entries.ConfigFlowResult:
         """Handle the initial step."""
-        await self.async_set_unique_id(DOMAIN)
-        self._abort_if_unique_id_configured()
-
         if user_input is not None:
+            user_input[CONF_REGION_PROFILE] = user_input[CONF_COUNTRY_PROFILE]
             return self.async_create_entry(
-                title="Seasonal Events",
+                title=user_input[CONF_NAME],
                 data=user_input,
             )
 
@@ -98,6 +138,7 @@ class SeasonalEventsOptionsFlow(config_entries.OptionsFlow):
     ) -> config_entries.ConfigFlowResult:
         """Manage integration options."""
         if user_input is not None:
+            user_input[CONF_REGION_PROFILE] = user_input[CONF_COUNTRY_PROFILE]
             return self.async_create_entry(title="", data=user_input)
 
         current = {**self._config_entry.data, **self._config_entry.options}

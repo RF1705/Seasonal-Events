@@ -8,11 +8,13 @@ from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import UnitOfTime
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import dt as dt_util
 
 from .calendar_engine import new_year_countdown
+from .const import CONF_NAME, DEFAULT_NAME, DOMAIN
 
 
 async def async_setup_entry(
@@ -21,7 +23,16 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up Seasonal Events sensors."""
-    async_add_entities([NewYearCountdownSensor(hass, entry.entry_id)])
+    config = {**entry.data, **entry.options}
+    async_add_entities(
+        [
+            NewYearCountdownSensor(
+                hass,
+                entry.entry_id,
+                config.get(CONF_NAME, entry.title or DEFAULT_NAME),
+            )
+        ]
+    )
 
 
 class NewYearCountdownSensor(SensorEntity):
@@ -33,11 +44,23 @@ class NewYearCountdownSensor(SensorEntity):
     _attr_native_unit_of_measurement = UnitOfTime.SECONDS
     _attr_icon = "mdi:timer-sand"
 
-    def __init__(self, hass: HomeAssistant, entry_id: str) -> None:
+    def __init__(self, hass: HomeAssistant, entry_id: str, device_name: str) -> None:
         """Initialize the sensor."""
         self.hass = hass
+        self._entry_id = entry_id
+        self._device_name = device_name
         self._attr_unique_id = f"{entry_id}_new_year_countdown"
         self._countdown: dict[str, int | str] = {}
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device information."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._entry_id)},
+            manufacturer="Seasonal Events",
+            name=self._device_name,
+            model="Seasonal event calendar",
+        )
 
     @property
     def native_value(self) -> int | None:

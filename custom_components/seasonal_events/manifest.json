@@ -8,6 +8,5 @@
   "iot_class": "calculated",
   "issue_tracker": "https://github.com/RF1705/Seasonal-Events/issues",
   "requirements": [],
-  "single_config_entry": true,
   "version": "0.1.0"
 }

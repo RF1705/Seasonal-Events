@@ -15,18 +15,20 @@ date logic in one integration and keep automations small.
 - `binary_sensor.christmas_season`
 - `binary_sensor.new_year`
 - `binary_sensor.halloween`
+- `binary_sensor.easter`
 - `sensor.new_year_countdown`
 
-## First region profile
+## First country profile
 
-The first scaffold includes a `western_christian` profile:
+The first scaffold includes a `de` profile:
 
 - Advent: first Advent Sunday through December 24
 - Christmas Season: first Advent Sunday through January 6
 - New Year: December 31 through January 1
 - Halloween: October 31
+- Easter: Good Friday through Easter Monday
 
-More regional profiles can be added as data definitions.
+More country profiles and event collections can be added as data definitions.
 
 ## Automation idea
 

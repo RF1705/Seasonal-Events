@@ -5,7 +5,9 @@
         "title": "Seasonal Events",
         "description": "Create sensors for recurring seasonal events.",
         "data": {
-          "region_profile": "Region profile",
+          "name": "Name",
+          "country_profile": "Country profile",
+          "event_collections": "Event collections",
           "enabled_events": "Enabled events"
         }
       }
@@ -16,7 +18,9 @@
       "init": {
         "title": "Seasonal Events",
         "data": {
-          "region_profile": "Region profile",
+          "name": "Name",
+          "country_profile": "Country profile",
+          "event_collections": "Event collections",
           "enabled_events": "Enabled events"
         }
       }

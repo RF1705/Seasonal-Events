@@ -8,6 +8,7 @@ from zoneinfo import ZoneInfo
 from .const import (
     EVENT_ADVENT,
     EVENT_CHRISTMAS_SEASON,
+    EVENT_EASTER,
     EVENT_HALLOWEEN,
     EVENT_NEW_YEAR,
 )
@@ -20,6 +21,25 @@ def first_advent(year: int) -> date:
     days_since_sunday = (christmas_eve.weekday() + 1) % 7
     fourth_advent = christmas_eve - timedelta(days=days_since_sunday)
     return fourth_advent - timedelta(days=21)
+
+
+def easter_sunday(year: int) -> date:
+    """Return Western Easter Sunday for the given year."""
+    a = year % 19
+    b = year // 100
+    c = year % 100
+    d = b // 4
+    e = b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i = c // 4
+    k = c % 4
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    month = (h + l - 7 * m + 114) // 31
+    day = ((h + l - 7 * m + 114) % 31) + 1
+    return date(year, month, day)
 
 
 def next_new_year(now: datetime) -> datetime:
@@ -53,10 +73,12 @@ def new_year_countdown(now: datetime) -> dict[str, int | str]:
 
 def event_windows_for_year(year: int, region_profile: str) -> list[EventWindow]:
     """Return event windows for a year and region profile."""
-    # The first profile intentionally starts narrow. Future region profiles can
-    # override these definitions without changing the entity layer.
-    if region_profile != "western_christian":
-        region_profile = "western_christian"
+    if region_profile == "western_christian":
+        region_profile = "de"
+    if region_profile != "de":
+        region_profile = "de"
+
+    easter = easter_sunday(year)
 
     return [
         EventWindow(
@@ -86,6 +108,13 @@ def event_windows_for_year(year: int, region_profile: str) -> list[EventWindow]:
             start=date(year, 10, 31),
             end=date(year, 10, 31),
             icon="mdi:pumpkin",
+        ),
+        EventWindow(
+            key=EVENT_EASTER,
+            name="Easter",
+            start=easter - timedelta(days=2),
+            end=easter + timedelta(days=1),
+            icon="mdi:egg-easter",
         ),
     ]
 

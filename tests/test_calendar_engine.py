@@ -7,6 +7,7 @@ from zoneinfo import ZoneInfo
 
 from custom_components.seasonal_events.calendar_engine import (
     active_or_next_window,
+    easter_sunday,
     first_advent,
     new_year_countdown,
 )
@@ -40,3 +41,8 @@ def test_new_year_countdown() -> None:
 
     assert countdown["total_seconds"] == 30
     assert countdown["formatted"] == "0d 00:00:30"
+
+
+def test_easter_2026() -> None:
+    """Test Western Easter calculation."""
+    assert easter_sunday(2026) == date(2026, 4, 5)

@@ -7,12 +7,25 @@ from datetime import timedelta
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import dt as dt_util
 
 from .calendar_engine import active_or_next_window
-from .const import CONF_ENABLED_EVENTS, CONF_REGION_PROFILE, DEFAULT_EVENTS, DEFAULT_REGION_PROFILE
+from .const import (
+    CONF_COUNTRY_PROFILE,
+    CONF_ENABLED_EVENTS,
+    CONF_EVENT_COLLECTIONS,
+    CONF_NAME,
+    CONF_REGION_PROFILE,
+    DEFAULT_EVENT_COLLECTIONS,
+    DEFAULT_EVENTS,
+    DEFAULT_NAME,
+    DEFAULT_REGION_PROFILE,
+    DOMAIN,
+    EVENTS,
+)
 
 
 async def async_setup_entry(
@@ -23,10 +36,25 @@ async def async_setup_entry(
     """Set up Seasonal Events binary sensors."""
     config = {**entry.data, **entry.options}
     enabled_events = config.get(CONF_ENABLED_EVENTS, DEFAULT_EVENTS)
-    region_profile = config.get(CONF_REGION_PROFILE, DEFAULT_REGION_PROFILE)
+    enabled_collections = config.get(CONF_EVENT_COLLECTIONS, DEFAULT_EVENT_COLLECTIONS)
+    enabled_events = [
+        event_key
+        for event_key in enabled_events
+        if EVENTS.get(event_key, {}).get("collection") in enabled_collections
+    ]
+    region_profile = config.get(
+        CONF_COUNTRY_PROFILE,
+        config.get(CONF_REGION_PROFILE, DEFAULT_REGION_PROFILE),
+    )
 
     async_add_entities(
-        SeasonalEventBinarySensor(hass, entry.entry_id, event_key, region_profile)
+        SeasonalEventBinarySensor(
+            hass,
+            entry.entry_id,
+            config.get(CONF_NAME, entry.title or DEFAULT_NAME),
+            event_key,
+            region_profile,
+        )
         for event_key in enabled_events
     )
 
@@ -40,16 +68,29 @@ class SeasonalEventBinarySensor(BinarySensorEntity):
         self,
         hass: HomeAssistant,
         entry_id: str,
+        device_name: str,
         event_key: str,
         region_profile: str,
     ) -> None:
         """Initialize the entity."""
         self.hass = hass
+        self._entry_id = entry_id
+        self._device_name = device_name
         self._event_key = event_key
         self._region_profile = region_profile
         self._window = None
         self._attr_unique_id = f"{entry_id}_{event_key}"
-        self._attr_name = event_key.replace("_", " ").title()
+        self._attr_name = str(EVENTS[event_key]["name"])
+
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Return device information."""
+        return DeviceInfo(
+            identifiers={(DOMAIN, self._entry_id)},
+            manufacturer="Seasonal Events",
+            name=self._device_name,
+            model="Seasonal event calendar",
+        )
 
     @property
     def icon(self) -> str | None:
@@ -74,7 +115,9 @@ class SeasonalEventBinarySensor(BinarySensorEntity):
         today = dt_util.now().date()
         return {
             "event_key": self._event_key,
+            "event_collection": EVENTS[self._event_key]["collection"],
             "region_profile": self._region_profile,
+            "country_profile": self._region_profile,
             "start_date": self._window.start.isoformat(),
             "end_date": self._window.end.isoformat(),
             "days_until_start": self._window.days_until_start(today),

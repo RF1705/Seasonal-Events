@@ -5,7 +5,9 @@
         "title": "Seasonal Events",
         "description": "Erstellt Sensoren fuer wiederkehrende saisonale Ereignisse.",
         "data": {
-          "region_profile": "Regionales Profil",
+          "name": "Name",
+          "country_profile": "Laenderprofil",
+          "event_collections": "Ereignisgruppen",
           "enabled_events": "Aktive Ereignisse"
         }
       }
@@ -16,7 +18,9 @@
       "init": {
         "title": "Seasonal Events",
         "data": {
-          "region_profile": "Regionales Profil",
+          "name": "Name",
+          "country_profile": "Laenderprofil",
+          "event_collections": "Ereignisgruppen",
           "enabled_events": "Aktive Ereignisse"
         }
       }
