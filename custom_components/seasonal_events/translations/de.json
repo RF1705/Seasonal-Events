@@ -5,9 +5,12 @@
         "title": "Seasonal Events",
         "description": "Erstellt Sensoren fuer wiederkehrende saisonale Ereignisse.",
         "data": {
-          "name": "Name",
-          "country_profile": "Laenderprofil",
-          "enabled_events": "Aktive Ereignisse"
+          "country_profile": "Berechnungsprofil",
+          "event_groups": "Ereignisgruppen"
+        },
+        "data_description": {
+          "country_profile": "Wird zur Berechnung landesspezifischer Regeln und Datumsunterschiede verwendet.",
+          "event_groups": "Erstellt Sensoren fuer alle Ereignisse in den ausgewaehlten Gruppen."
         }
       }
     }
@@ -92,9 +95,12 @@
       "init": {
         "title": "Seasonal Events",
         "data": {
-          "name": "Name",
-          "country_profile": "Laenderprofil",
-          "enabled_events": "Aktive Ereignisse"
+          "country_profile": "Berechnungsprofil",
+          "event_groups": "Ereignisgruppen"
+        },
+        "data_description": {
+          "country_profile": "Wird zur Berechnung landesspezifischer Regeln und Datumsunterschiede verwendet.",
+          "event_groups": "Erstellt Sensoren fuer alle Ereignisse in den ausgewaehlten Gruppen."
         }
       }
     }

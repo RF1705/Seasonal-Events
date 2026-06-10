@@ -11,8 +11,9 @@ date logic in one integration and keep automations small.
 
 ## Configuration
 
-Create a calendar profile, for example `Deutschland`, choose a country profile,
-and select the individual events you want to expose as sensors.
+Create a calendar profile, choose the calculation profile used for regional
+date rules, and select event groups such as Christian, Jewish, Islamic, general,
+or country-specific events.
 
 ## Initial entities
 

@@ -8,6 +8,7 @@ CONF_NAME = "name"
 CONF_COUNTRY_PROFILE = "country_profile"
 CONF_REGION_PROFILE = "region_profile"
 CONF_ENABLED_EVENTS = "enabled_events"
+CONF_EVENT_GROUPS = "event_groups"
 
 DEFAULT_NAME = "Deutschland"
 DEFAULT_COUNTRY_PROFILE = "de"
@@ -35,6 +36,61 @@ EVENT_GUY_FAWKES_NIGHT = "guy_fawkes_night"
 EVENT_GERMAN_UNITY_DAY = "german_unity_day"
 EVENT_YOM_HAATZMAUT = "yom_haatzmaut"
 EVENT_SAUDI_NATIONAL_DAY = "saudi_national_day"
+
+GROUP_GENERAL = "general"
+GROUP_CHRISTIAN = "christian"
+GROUP_ISLAMIC = "islamic"
+GROUP_JEWISH = "jewish"
+GROUP_COUNTRY = "country"
+
+EVENT_GROUPS = {
+    GROUP_GENERAL: [
+        EVENT_NEW_YEAR,
+        EVENT_HALLOWEEN,
+    ],
+    GROUP_CHRISTIAN: [
+        EVENT_ADVENT,
+        EVENT_CHRISTMAS_SEASON,
+        EVENT_EASTER,
+    ],
+    GROUP_ISLAMIC: [
+        EVENT_RAMADAN,
+        EVENT_EID_AL_FITR,
+        EVENT_EID_AL_ADHA,
+        EVENT_ASHURA,
+        EVENT_LAILAT_AL_QADR,
+    ],
+    GROUP_JEWISH: [
+        EVENT_ROSH_HASHANAH,
+        EVENT_YOM_KIPPUR,
+        EVENT_SUKKOT,
+        EVENT_HANUKKAH,
+        EVENT_PASSOVER,
+        EVENT_SHAVUOT,
+        EVENT_PURIM,
+    ],
+    GROUP_COUNTRY: [
+        EVENT_GERMAN_UNITY_DAY,
+        EVENT_THANKSGIVING,
+        EVENT_GUY_FAWKES_NIGHT,
+        EVENT_YOM_HAATZMAUT,
+        EVENT_SAUDI_NATIONAL_DAY,
+    ],
+}
+
+COUNTRY_PROFILE_EVENTS = {
+    "de": [EVENT_GERMAN_UNITY_DAY],
+    "us": [EVENT_THANKSGIVING],
+    "gb": [EVENT_GUY_FAWKES_NIGHT],
+    "il": [EVENT_YOM_HAATZMAUT],
+    "sa": [EVENT_SAUDI_NATIONAL_DAY],
+}
+
+DEFAULT_EVENT_GROUPS = [
+    GROUP_GENERAL,
+    GROUP_CHRISTIAN,
+    GROUP_COUNTRY,
+]
 
 DEFAULT_EVENTS = [
     EVENT_NEW_YEAR,
@@ -142,6 +198,23 @@ COUNTRY_PROFILE_LABELS = {
         "gb": "Vereinigtes Koenigreich",
         "il": "Israel",
         "sa": "Saudi-Arabien",
+    },
+}
+
+EVENT_GROUP_LABELS = {
+    "en": {
+        GROUP_GENERAL: "General events",
+        GROUP_CHRISTIAN: "Christian calendar",
+        GROUP_ISLAMIC: "Islamic calendar",
+        GROUP_JEWISH: "Jewish calendar",
+        GROUP_COUNTRY: "Country-specific events",
+    },
+    "de": {
+        GROUP_GENERAL: "Allgemeine Ereignisse",
+        GROUP_CHRISTIAN: "Christlicher Kalender",
+        GROUP_ISLAMIC: "Islamischer Kalender",
+        GROUP_JEWISH: "Juedischer Kalender",
+        GROUP_COUNTRY: "Laenderspezifische Ereignisse",
     },
 }
 

@@ -12,17 +12,14 @@ from homeassistant.helpers import selector
 
 from .const import (
     CONF_COUNTRY_PROFILE,
-    CONF_ENABLED_EVENTS,
-    CONF_NAME,
+    CONF_EVENT_GROUPS,
     CONF_REGION_PROFILE,
     COUNTRY_PROFILES,
     COUNTRY_PROFILE_LABELS,
     DEFAULT_COUNTRY_PROFILE,
-    DEFAULT_EVENTS,
-    DEFAULT_NAME,
+    DEFAULT_EVENT_GROUPS,
     DOMAIN,
-    EVENT_LABELS,
-    EVENTS,
+    EVENT_GROUP_LABELS,
 )
 
 
@@ -48,12 +45,12 @@ def _select_options(items: dict[str, str]) -> list[selector.SelectOptionDict]:
     ]
 
 
-def _event_options(language: str | None) -> list[selector.SelectOptionDict]:
-    """Return event selector options."""
-    labels = _localized_labels(EVENT_LABELS, language, {key: key for key in EVENTS})
+def _event_group_options(language: str | None) -> list[selector.SelectOptionDict]:
+    """Return event group selector options."""
+    labels = _localized_labels(EVENT_GROUP_LABELS, language, {})
     return [
-        selector.SelectOptionDict(value=value, label=labels[value])
-        for value in EVENTS
+        selector.SelectOptionDict(value=value, label=label)
+        for value, label in labels.items()
     ]
 
 
@@ -75,10 +72,6 @@ def _schema(
     return vol.Schema(
         {
             vol.Required(
-                CONF_NAME,
-                default=defaults.get(CONF_NAME, DEFAULT_NAME),
-            ): selector.TextSelector(),
-            vol.Required(
                 CONF_COUNTRY_PROFILE,
                 default=country_profile,
             ): selector.SelectSelector(
@@ -88,11 +81,11 @@ def _schema(
                 )
             ),
             vol.Required(
-                CONF_ENABLED_EVENTS,
-                default=defaults.get(CONF_ENABLED_EVENTS, DEFAULT_EVENTS),
+                CONF_EVENT_GROUPS,
+                default=defaults.get(CONF_EVENT_GROUPS, DEFAULT_EVENT_GROUPS),
             ): selector.SelectSelector(
                 selector.SelectSelectorConfig(
-                    options=_event_options(language),
+                    options=_event_group_options(language),
                     multiple=True,
                     mode=selector.SelectSelectorMode.LIST,
                 )
@@ -113,8 +106,13 @@ class SeasonalEventsConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         if user_input is not None:
             user_input[CONF_REGION_PROFILE] = user_input[CONF_COUNTRY_PROFILE]
+            country_labels = _localized_labels(
+                COUNTRY_PROFILE_LABELS,
+                self.hass.config.language,
+                COUNTRY_PROFILES,
+            )
             return self.async_create_entry(
-                title=user_input[CONF_NAME],
+                title=country_labels[user_input[CONF_COUNTRY_PROFILE]],
                 data=user_input,
             )
 

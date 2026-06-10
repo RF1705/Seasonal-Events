@@ -5,9 +5,12 @@
         "title": "Seasonal Events",
         "description": "Create sensors for recurring seasonal events.",
         "data": {
-          "name": "Name",
-          "country_profile": "Country profile",
-          "enabled_events": "Enabled events"
+          "country_profile": "Calculation profile",
+          "event_groups": "Event groups"
+        },
+        "data_description": {
+          "country_profile": "Used to calculate country-specific rules and date differences.",
+          "event_groups": "Creates sensors for all events in the selected groups."
         }
       }
     }
@@ -92,9 +95,12 @@
       "init": {
         "title": "Seasonal Events",
         "data": {
-          "name": "Name",
-          "country_profile": "Country profile",
-          "enabled_events": "Enabled events"
+          "country_profile": "Calculation profile",
+          "event_groups": "Event groups"
+        },
+        "data_description": {
+          "country_profile": "Used to calculate country-specific rules and date differences.",
+          "event_groups": "Creates sensors for all events in the selected groups."
         }
       }
     }

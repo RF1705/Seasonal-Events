@@ -19,13 +19,18 @@ from .calendar_engine import active_or_next_window
 from .const import (
     CONF_COUNTRY_PROFILE,
     CONF_ENABLED_EVENTS,
+    CONF_EVENT_GROUPS,
     CONF_NAME,
     CONF_REGION_PROFILE,
+    COUNTRY_PROFILE_EVENTS,
+    DEFAULT_EVENT_GROUPS,
     DEFAULT_EVENTS,
     DEFAULT_NAME,
     DEFAULT_REGION_PROFILE,
     DOMAIN,
     EVENTS,
+    EVENT_GROUPS,
+    GROUP_COUNTRY,
 )
 
 
@@ -36,27 +41,48 @@ async def async_setup_entry(
 ) -> None:
     """Set up Seasonal Events binary sensors."""
     config = {**entry.data, **entry.options}
-    enabled_events = config.get(CONF_ENABLED_EVENTS, DEFAULT_EVENTS)
-    enabled_events = [
-        event_key
-        for event_key in enabled_events
-        if event_key in EVENTS
-    ]
     region_profile = config.get(
         CONF_COUNTRY_PROFILE,
         config.get(CONF_REGION_PROFILE, DEFAULT_REGION_PROFILE),
     )
+    enabled_events = _enabled_events(config, region_profile)
+    device_name = config.get(CONF_NAME, entry.title or DEFAULT_NAME)
 
     async_add_entities(
         SeasonalEventBinarySensor(
             hass,
             entry.entry_id,
-            config.get(CONF_NAME, entry.title or DEFAULT_NAME),
+            device_name,
             event_key,
             region_profile,
         )
         for event_key in enabled_events
     )
+
+
+def _enabled_events(config: dict, region_profile: str) -> list[str]:
+    """Return enabled event keys from current group options or legacy options."""
+    if CONF_EVENT_GROUPS not in config and CONF_ENABLED_EVENTS in config:
+        return [
+            event_key
+            for event_key in config.get(CONF_ENABLED_EVENTS, DEFAULT_EVENTS)
+            if event_key in EVENTS
+        ]
+
+    event_groups = config.get(CONF_EVENT_GROUPS, DEFAULT_EVENT_GROUPS)
+    enabled_events: list[str] = []
+    seen: set[str] = set()
+
+    for group in event_groups:
+        group_events = EVENT_GROUPS.get(group, [])
+        if group == GROUP_COUNTRY:
+            group_events = COUNTRY_PROFILE_EVENTS.get(region_profile, [])
+        for event_key in group_events:
+            if event_key in EVENTS and event_key not in seen:
+                enabled_events.append(event_key)
+                seen.add(event_key)
+
+    return enabled_events
 
 
 class SeasonalEventBinarySensor(BinarySensorEntity):
