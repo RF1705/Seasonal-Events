@@ -9,6 +9,11 @@ seasonal periods as simple entities for automations.
 The integration is intended to behave like the Workday sensor pattern: keep the
 date logic in one integration and keep automations small.
 
+## Configuration
+
+Create a calendar profile, for example `Deutschland`, choose a country profile,
+and select the individual events you want to expose as sensors.
+
 ## Initial entities
 
 - `binary_sensor.advent`

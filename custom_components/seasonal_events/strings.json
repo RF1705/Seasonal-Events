@@ -7,7 +7,6 @@
         "data": {
           "name": "Name",
           "country_profile": "Country profile",
-          "event_collections": "Event collections",
           "enabled_events": "Enabled events"
         }
       }
@@ -47,7 +46,6 @@
         "data": {
           "name": "Name",
           "country_profile": "Country profile",
-          "event_collections": "Event collections",
           "enabled_events": "Enabled events"
         }
       }

@@ -13,18 +13,14 @@ from homeassistant.helpers import selector
 from .const import (
     CONF_COUNTRY_PROFILE,
     CONF_ENABLED_EVENTS,
-    CONF_EVENT_COLLECTIONS,
     CONF_NAME,
     CONF_REGION_PROFILE,
     COUNTRY_PROFILES,
     COUNTRY_PROFILE_LABELS,
     DEFAULT_COUNTRY_PROFILE,
-    DEFAULT_EVENT_COLLECTIONS,
     DEFAULT_EVENTS,
     DEFAULT_NAME,
     DOMAIN,
-    EVENT_COLLECTIONS,
-    EVENT_COLLECTION_LABELS,
     EVENT_LABELS,
     EVENTS,
 )
@@ -76,11 +72,6 @@ def _schema(
         language,
         COUNTRY_PROFILES,
     )
-    collection_labels = _localized_labels(
-        EVENT_COLLECTION_LABELS,
-        language,
-        EVENT_COLLECTIONS,
-    )
     return vol.Schema(
         {
             vol.Required(
@@ -94,19 +85,6 @@ def _schema(
                 selector.SelectSelectorConfig(
                     options=_select_options(country_labels),
                     mode=selector.SelectSelectorMode.DROPDOWN,
-                )
-            ),
-            vol.Required(
-                CONF_EVENT_COLLECTIONS,
-                default=defaults.get(
-                    CONF_EVENT_COLLECTIONS,
-                    DEFAULT_EVENT_COLLECTIONS,
-                ),
-            ): selector.SelectSelector(
-                selector.SelectSelectorConfig(
-                    options=_select_options(collection_labels),
-                    multiple=True,
-                    mode=selector.SelectSelectorMode.LIST,
                 )
             ),
             vol.Required(

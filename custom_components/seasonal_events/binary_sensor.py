@@ -19,10 +19,8 @@ from .calendar_engine import active_or_next_window
 from .const import (
     CONF_COUNTRY_PROFILE,
     CONF_ENABLED_EVENTS,
-    CONF_EVENT_COLLECTIONS,
     CONF_NAME,
     CONF_REGION_PROFILE,
-    DEFAULT_EVENT_COLLECTIONS,
     DEFAULT_EVENTS,
     DEFAULT_NAME,
     DEFAULT_REGION_PROFILE,
@@ -39,11 +37,10 @@ async def async_setup_entry(
     """Set up Seasonal Events binary sensors."""
     config = {**entry.data, **entry.options}
     enabled_events = config.get(CONF_ENABLED_EVENTS, DEFAULT_EVENTS)
-    enabled_collections = config.get(CONF_EVENT_COLLECTIONS, DEFAULT_EVENT_COLLECTIONS)
     enabled_events = [
         event_key
         for event_key in enabled_events
-        if EVENTS.get(event_key, {}).get("collection") in enabled_collections
+        if event_key in EVENTS
     ]
     region_profile = config.get(
         CONF_COUNTRY_PROFILE,
@@ -117,7 +114,6 @@ class SeasonalEventBinarySensor(BinarySensorEntity):
         today = dt_util.now().date()
         return {
             "event_key": self._event_key,
-            "event_collection": EVENTS[self._event_key]["collection"],
             "region_profile": self._region_profile,
             "country_profile": self._region_profile,
             "start_date": self._window.start.isoformat(),

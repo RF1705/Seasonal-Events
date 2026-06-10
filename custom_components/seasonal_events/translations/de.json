@@ -7,7 +7,6 @@
         "data": {
           "name": "Name",
           "country_profile": "Laenderprofil",
-          "event_collections": "Ereignisgruppen",
           "enabled_events": "Aktive Ereignisse"
         }
       }
@@ -47,7 +46,6 @@
         "data": {
           "name": "Name",
           "country_profile": "Laenderprofil",
-          "event_collections": "Ereignisgruppen",
           "enabled_events": "Aktive Ereignisse"
         }
       }
