@@ -1,0 +1,25 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Seasonal Events",
+        "description": "Erstellt Sensoren fuer wiederkehrende saisonale Ereignisse.",
+        "data": {
+          "region_profile": "Regionales Profil",
+          "enabled_events": "Aktive Ereignisse"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Seasonal Events",
+        "data": {
+          "region_profile": "Regionales Profil",
+          "enabled_events": "Aktive Ereignisse"
+        }
+      }
+    }
+  }
+}

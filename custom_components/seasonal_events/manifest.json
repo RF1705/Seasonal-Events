@@ -1,0 +1,13 @@
+{
+  "domain": "seasonal_events",
+  "name": "Seasonal Events",
+  "codeowners": ["@RF1705"],
+  "config_flow": true,
+  "documentation": "https://github.com/RF1705/Seasonal-Events",
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/RF1705/Seasonal-Events/issues",
+  "requirements": [],
+  "single_config_entry": true,
+  "version": "0.1.0"
+}

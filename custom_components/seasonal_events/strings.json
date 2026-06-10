@@ -1,0 +1,25 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Seasonal Events",
+        "description": "Create sensors for recurring seasonal events.",
+        "data": {
+          "region_profile": "Region profile",
+          "enabled_events": "Enabled events"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Seasonal Events",
+        "data": {
+          "region_profile": "Region profile",
+          "enabled_events": "Enabled events"
+        }
+      }
+    }
+  }
+}
