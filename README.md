@@ -1,6 +1,7 @@
 # Seasonal Events
 
 [![GitHub release](https://img.shields.io/github/v/release/RF1705/Seasonal-Events?display_name=tag)](https://github.com/RF1705/Seasonal-Events/releases)
+[![GitHub Downloads](https://img.shields.io/github/downloads/RF1705/Seasonal-Events/total)](https://github.com/RF1705/Seasonal-Events/releases)
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz/)
 
 Seasonal Events is a Home Assistant custom integration that exposes recurring
